@@ -1,0 +1,9 @@
+number run(number a, number b) {
+  return a + b
+}
+
+number num1 = 10
+number num2 = 5
+
+number sum = run(num1, num2)
+print(sum)
