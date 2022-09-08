@@ -4,9 +4,8 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include "build.cpp";
 
-using namespace std;
+#include "build.cpp";
 
 string readfile(string path);
 int convertfile(string text);
@@ -29,7 +28,7 @@ int main(int argc, char* argv[]) {
 	int status = convertfile(text);
 	if (status != 0) return status;
 
-	 run();
+	run();
 	return 0;
 }
 
@@ -109,16 +108,58 @@ int convertfile(string text) {
 	createBaseFile();
 	addSemicolons(text);
 
-	char ch;
-	fstream fin("build.janninscript", fstream::in);
-
+	string body = "";
+	string run = "";
+	
+	char c;
 	string currentWord = "";
-	string prevWord = "";
+	string prevWord;
+	
+	vector<string> words;
+	fstream i("build.janninscript", fstream::in);
+	while (i >> noskipws >> c) {
+		if (c == '\n' || c == ' ' || c == ';') {
+			//cout << currentWord << endl;
+			words.push_back(currentWord);
+			currentWord = "";
+		}
+		currentWord += c;
+	}
 
+
+	/*for (int i = 0; i < words.size(); i++) {
+		cout << words[i] << i;
+	}*/
+	// Go through each word
+	for (int i = 0; i < words.size(); i++) {
+		// Check prevwords
+		if (i > 0) {
+			// For loops
+			if (words[i - 1] == "for") {
+				run += "(int " + words[i] + "=" + words[i + 1] + ";" + words[i] + "<";
+				if (words[i + 2] == "to" || words[i + 2] == " to" || words[i + 2] == "to " || words[i + 1] == " to ") {
+					run += words[i + 3];
+				}
+				run += ";" + words[i] + "++) {\n\t";
+				i += 5;
+			}
+		}
+		run += words[i] + ' ';
+	}
+	appendToBuild(run);
+	appendToBuild("return 0;\n}");
+	appendToBuild("void print(int s) {\n\tcout << s << endl;\n}\n");
+
+	return 0;
+
+
+
+	// Add to the build file letter by letter
+	char ch;
 	string build = "";
-	string finalBuild = "";
+	fstream fin("build.janninscript", fstream::in);
 	while (fin >> noskipws >> ch) {
-		if (ch == '\n') continue;
+		//if (ch == '\n') continue;
 		build += ch;
 	}
 
