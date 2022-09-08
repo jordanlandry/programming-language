@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "build.cpp";
+//using namespace std;
 
 string readfile(string path);
 int convertfile(string text);
@@ -81,19 +82,18 @@ void createBaseFile() {
 	build << "using namespace std;\n";
 
 	// Create print overloads
-	build << "void print(string s);\n";
-	build << "void print(char s);\n";
-	build << "void print(int s);\n";
-	build << "void print(bool s);\n";
-	build << "void print(float s);\n";
-	build << "void print(double s);\n";
-	build << "void print(long s);\n";
+	build << "void print(string s);";
+	build << "void print(char s);";
+	build << "void print(int s);";
+	build << "void print(bool s);";
+	build << "void print(float s);";
+	build << "void print(double s);";
+	build << "void print(long s);";
 
 	build << "void print(vector<double> s);\n";
 
 	build << "int run() {\n\t";
 }
-
 
 string replaceAll(string str, const string& from, const string& to) {
 	size_t start_pos = 0;
@@ -135,24 +135,22 @@ int convertfile(string text) {
 		// Check prevwords
 		if (i > 0) {
 			// For loops
-			if (words[i - 1] == "for") {
+			if (replaceAll(words[i - 1], " ", "") == "for") {
 				run += "(int " + words[i] + "=" + words[i + 1] + ";" + words[i] + "<";
 				if (words[i + 2] == "to" || words[i + 2] == " to" || words[i + 2] == "to " || words[i + 1] == " to ") {
 					run += words[i + 3];
 				}
-				run += ";" + words[i] + "++) {\n\t";
-				i += 5;
+				run += ";" + words[i] + "++) {";
+				i += 5;		// Skip to the curly bracket
 			}
 		}
 		run += words[i] + ' ';
 	}
 	appendToBuild(run);
 	appendToBuild("return 0;\n}");
-	appendToBuild("void print(int s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(int s) {cout << s << endl;}");
 
 	return 0;
-
-
 
 	// Add to the build file letter by letter
 	char ch;
