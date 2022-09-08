@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 	int status = convertfile(text);
 	if (status != 0) return status;
 
-	run();
+	 run();
 	return 0;
 }
 
@@ -78,6 +78,7 @@ void createBaseFile() {
 	ofstream build("build.cpp");
 	build << "#include <iostream>\n";
 	build << "#include <string>\n";
+	build << "#include <vector>\n";
 	build << "using namespace std;\n";
 
 	// Create print overloads
@@ -88,6 +89,8 @@ void createBaseFile() {
 	build << "void print(float s);\n";
 	build << "void print(double s);\n";
 	build << "void print(long s);\n";
+
+	build << "void print(vector<double> s);\n";
 
 	build << "int run() {\n\t";
 }
@@ -123,6 +126,20 @@ int convertfile(string text) {
 	build = replaceAll(build, "number", "double");
 	build = replaceAll(build, "str", "string");
 	build = replaceAll(build, "boolean", "bool");
+
+	// Turn arrays into vectors
+	build = replaceAll(build, "number[]", "vector<number>");
+	build = replaceAll(build, "string=[]", "vector<string>");
+	build = replaceAll(build, "str[]", "vector<string>");
+	build = replaceAll(build, "char[]", "vector<char>");
+	build = replaceAll(build, "int[]", "vector<int>");
+	build = replaceAll(build, "long[]", "vector<long>");
+	build = replaceAll(build, "float[]", "vector<float>");
+	build = replaceAll(build, "double[]", "vector<double>");
+	build = replaceAll(build, "bool[]", "vector<bool>");
+	build = replaceAll(build, "boolean[]", "vector<bool>");
+	build = replaceAll(build, ".push(", ".push_back(");
+
 	appendToBuild(build);
 	appendToBuild("return 0;");
 
@@ -139,6 +156,9 @@ int convertfile(string text) {
 		appendToBuild("void print(double s) {\n\tcout << s << endl;\n}\n");
 		appendToBuild("void print(long s) {\n\tcout << s << endl;\n}\n");
 		appendToBuild("void print(char s) {\n\tcout << s << endl;\n}\n");
+
+		// Vector overloads
+		appendToBuild("void print(vector<double> s) {\n\tcout << \"[\";\n\tfor (int i = 0; i < s.size(); i++) {\n\t\t cout << s[i];\n\t\tif (i < s.size() -1) cout << \", \";\n\t}\n\tcout << \"]\";\n}\n");
 	}
 
 	return 0;

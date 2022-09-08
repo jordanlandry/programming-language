@@ -1,11 +1,10 @@
-string a = "Hello World in JanninScript"
-print(a)
+str myMessage = "JanninScript is dope!"
+print(myMessage);
 
+number[] test;
+test.push(10)
+test.push(11)
+test.push(12)
+test.push(13)
 
-boolean b = true;
-print(b)
-
-char c = 'a'
-print(c)
-
-
+print(test)

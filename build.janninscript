@@ -1,2 +1,12 @@
-string 
-print("Can somebody please hire me now!!")
+str myMessage = "JanninScript is dope!";
+print(myMessage);;
+
+
+
+number[] test;;
+test.push(10);
+test.push(11);
+test.push(12);
+test.push(13);
+
+print(test);
