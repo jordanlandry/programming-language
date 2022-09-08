@@ -12,6 +12,15 @@ string readfile(string path);
 int convertfile(string text);
 void addSemicolons(string text);
 
+class Keywords {
+public:
+	string noNewLine = "nnl";
+	string print = "print";
+	string forLoop = "for";
+	string ifStatement = "if";
+};
+const Keywords keywords;
+
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
 		cout << "Usage: janninscript file" << endl;
@@ -81,17 +90,8 @@ void createBaseFile() {
 	build << "#include <vector>\n";
 	build << "using namespace std;\n";
 
-	// Create print overloads
-	build << "void print(char* s);";
-	build << "void print(char s);";
-	build << "void print(int s);";
-	build << "void print(bool s);";
-	build << "void print(float s);";
-	build << "void print(double s);";
-	build << "void print(long s);";
-
-	build << "void print(vector<double> s);\n";
-
+	// Random Function
+	build << "int rand(int min, int max);";
 	build << "int run() {\n\t";
 }
 
@@ -117,23 +117,54 @@ int convertfile(string text) {
 	
 	vector<string> words;
 	fstream i("build.janninscript", fstream::in);
+
+	// Split each word by certain characters
 	while (i >> noskipws >> c) {
-		if (c == '\n' || c == ' ' || c == ';') {
-			//cout << currentWord << endl;
+		if (c == '\n' || c == ' ' || c == ';' || c == '(' || c == ')' || c == ',') {
 			words.push_back(currentWord);
 			currentWord = "";
-		}
-		currentWord += c;
-	}
 
-	/*for (int i = 0; i < words.size(); i++) {
-		cout << words[i] << i;
-	}*/
+			if (c != ' ') {
+				currentWord += c;
+				words.push_back(currentWord);
+				currentWord = "";
+			}
+		}
+		else currentWord += c;
+	}
 
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
+		// Print statements
+		if (replaceAll(words[i], " ", "") == keywords.print) {
+			run += "cout ";
+			int j = 1;
+
+			// Keep adding until you reach the end of the print statement
+			while (words[i + j] != ")") {
+				// Make sure you are not adding brackets because that will be invalid syntax in c++
+				if (
+				replaceAll(words[i + j], " ", "") != "(" && 
+				replaceAll(words[i + j], " ", "") != ")" && 
+				replaceAll(words[i + j], " ", "") != keywords.noNewLine &&
+				replaceAll(words[i + j], " ", "") != "," &&
+				replaceAll(words[i + j], " ", "") != "" 
+				) 
+				{
+					run += "<<" + words[i + j];
+				}
+
+				j++;
+			}
+			// Offset the current words so you don't repeat
+			i += j + 1;
+			if (words[i - 2] != keywords.noNewLine) {
+				run += "<< endl";
+			}
+		}
+
 		// For loops
-		if (replaceAll(words[i], " ", "") == "for") {
+		if (replaceAll(words[i], " ", "") == keywords.forLoop) {
 			run += "for (int " + words[i + 1] + "=" + words[i + 2] + ";" + words[i + 1] + "<";
 			if (replaceAll(words[i + 3], " ", "") == "to") {
 				run += words[i + 4];
@@ -144,7 +175,7 @@ int convertfile(string text) {
 		}
 
 		// If statements
-		if (replaceAll(words[i], " ", "") == "if") {
+		if (replaceAll(words[i], " ", "") == keywords.ifStatement) {
 			run += "if (";
 			int j = 1;
 			while (replaceAll(words[i + j], " ", "") != "{") {
@@ -158,62 +189,10 @@ int convertfile(string text) {
 	}
 	appendToBuild(run);
 	appendToBuild("return 0;\n}");
-	appendToBuild("\nvoid print(char* s) {\n\tcout << s << endl;\n}\n");
-	appendToBuild("void print(bool s) {\n\tif (s) cout << \"true\" << endl;\n\telse cout << \"false\" << endl;\n}\n");
-	appendToBuild("void print(int s) {\n\tcout << s << endl;\n}\n");
-	appendToBuild("void print(float s) {\n\tcout << s << endl;\n}\n");
-	appendToBuild("void print(double s) {\n\tcout << s << endl;\n}\n");
-	appendToBuild("void print(long s) {\n\tcout << s << endl;\n}\n");
-	appendToBuild("void print(char s) {\n\tcout << s << endl;\n}\n");
 
-	return 0;
-
-	// Add to the build file letter by letter
-	char ch;
-	string build = "";
-	fstream fin("build.janninscript", fstream::in);
-	while (fin >> noskipws >> ch) {
-		//if (ch == '\n') continue;
-		build += ch;
-	}
-
-	// Replace script keywords with c++ keywords
-	build = replaceAll(build, "number", "double");
-	build = replaceAll(build, "str", "string");
-	build = replaceAll(build, "boolean", "bool");
-
-	// Turn arrays into vectors
-	build = replaceAll(build, "number[]", "vector<number>");
-	build = replaceAll(build, "string=[]", "vector<string>");
-	build = replaceAll(build, "str[]", "vector<string>");
-	build = replaceAll(build, "char[]", "vector<char>");
-	build = replaceAll(build, "int[]", "vector<int>");
-	build = replaceAll(build, "long[]", "vector<long>");
-	build = replaceAll(build, "float[]", "vector<float>");
-	build = replaceAll(build, "double[]", "vector<double>");
-	build = replaceAll(build, "bool[]", "vector<bool>");
-	build = replaceAll(build, "boolean[]", "vector<bool>");
-	build = replaceAll(build, ".push(", ".push_back(");
-
-	appendToBuild(build);
-	appendToBuild("return 0;");
-
-	// End main function
-	appendToBuild('}');
-
-	// Check if you should add the print function
-	if (build.find("print(") != string::npos) {
-		// Add print overload functions
-		appendToBuild("\nvoid print(string s) {\n\tcout << s << endl;\n}\n");
-		appendToBuild("void print(bool s) {\n\tif (s) cout << \"true\" << endl;\n\telse cout << \"false\" << endl;\n}\n");
-		appendToBuild("void print(int s) {\n\tcout << s << endl;\n}\n");
-		appendToBuild("void print(float s) {\n\tcout << s << endl;\n}\n");
-		appendToBuild("void print(double s) {\n\tcout << s << endl;\n}\n");
-		appendToBuild("void print(long s) {\n\tcout << s << endl;\n}\n");
-		appendToBuild("void print(char s) {\n\tcout << s << endl;\n}\n");
-
-		// Vector overloads
-		appendToBuild("void print(vector<double> s) {\n\tcout << \"[\";\n\tfor (int i = 0; i < s.size(); i++) {\n\t\t cout << s[i];\n\t\tif (i < s.size() -1) cout << \", \";\n\t}\n\tcout << \"]\";\n}\n");
+	// Import random function
+	if (run.find("rand(") || body.find("rand(")) {
+		appendToBuild("int rand(int min, int max) {\n\treturn rand() % (max + min);\n}");
 	}
 
 	return 0;
