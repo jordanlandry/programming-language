@@ -121,6 +121,7 @@ int convertfile(string text) {
 
 	// Replace script keywords with c++ keywords
 	build = replaceAll(build, "number", "double");
+	build = replaceAll(build, "str", "string");
 	build = replaceAll(build, "boolean", "bool");
 	appendToBuild(build);
 	appendToBuild("return 0;");

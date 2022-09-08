@@ -1,11 +1,2 @@
-string a = "Hello World in JanninScript";
-print(a);
-
-
-boolean b = true;;
-print(b);
-
-char c = 'a';
-print(c);
-
-
+string 
+print("Can somebody please hire me now!!")
