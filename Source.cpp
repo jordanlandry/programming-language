@@ -82,7 +82,7 @@ void createBaseFile() {
 	build << "using namespace std;\n";
 
 	// Create print overloads
-	build << "void print(string s);";
+	build << "void print(char* s);";
 	build << "void print(char s);";
 	build << "void print(int s);";
 	build << "void print(bool s);";
@@ -126,29 +126,45 @@ int convertfile(string text) {
 		currentWord += c;
 	}
 
-
 	/*for (int i = 0; i < words.size(); i++) {
 		cout << words[i] << i;
 	}*/
+
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
-		// Check prevwords
-		if (i > 0) {
-			// For loops
-			if (replaceAll(words[i - 1], " ", "") == "for") {
-				run += "(int " + words[i] + "=" + words[i + 1] + ";" + words[i] + "<";
-				if (words[i + 2] == "to" || words[i + 2] == " to" || words[i + 2] == "to " || words[i + 1] == " to ") {
-					run += words[i + 3];
-				}
-				run += ";" + words[i] + "++) {";
-				i += 5;		// Skip to the curly bracket
+		// For loops
+		if (replaceAll(words[i], " ", "") == "for") {
+			run += "for (int " + words[i + 1] + "=" + words[i + 2] + ";" + words[i + 1] + "<";
+			if (replaceAll(words[i + 3], " ", "") == "to") {
+				run += words[i + 4];
 			}
+
+			run += ";" + words[i + 1] + "++) {";
+			i += 6;		// Skip to the curly bracket
+		}
+
+		// If statements
+		if (replaceAll(words[i], " ", "") == "if") {
+			run += "if (";
+			int j = 1;
+			while (replaceAll(words[i + j], " ", "") != "{") {
+				run += words[i + j];
+				j++;
+			}
+			run += ")";
+			i += j;
 		}
 		run += words[i] + ' ';
 	}
 	appendToBuild(run);
 	appendToBuild("return 0;\n}");
-	appendToBuild("void print(int s) {cout << s << endl;}");
+	appendToBuild("\nvoid print(char* s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(bool s) {\n\tif (s) cout << \"true\" << endl;\n\telse cout << \"false\" << endl;\n}\n");
+	appendToBuild("void print(int s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(float s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(double s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(long s) {\n\tcout << s << endl;\n}\n");
+	appendToBuild("void print(char s) {\n\tcout << s << endl;\n}\n");
 
 	return 0;
 
