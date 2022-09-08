@@ -1,9 +1,11 @@
-number run(number a, number b) {
-  return a + b
-}
+string a = "Hello World in JanninScript"
+print(a)
 
-number num1 = 10
-number num2 = 5
 
-number sum = run(num1, num2)
-print(sum)
+boolean b = true;
+print(b)
+
+char c = 'a'
+print(c)
+
+
