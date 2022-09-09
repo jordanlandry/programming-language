@@ -22,6 +22,7 @@ public:
 	string classStatement = "class";
 	string whileLoop = "while";
 	string noNewLine = "noNewLine";
+	string functionDecloration = "func";
 };
 const Keywords keywords;
 
@@ -87,20 +88,29 @@ void appendToBuild(char text) {
 	outfile << text;
 }
 
-void createBaseFile() {
+string createBaseFile() {
 	ofstream build("build.cpp");
+	string extraClasses = "";
+
 	build << "#include <iostream>\n";
 	build << "#include <string>\n";
 	build << "#include <vector>\n";
-	build << "using namespace std;\n";
+	build << "using namespace std;";
+
+	// Print Function
+	build << "void print() {cout << endl;}template<typename First, typename ... Strings>";
+	build << "void print(First arg, const Strings&... rest) { cout << arg;print(rest...); }";
 
 	// Random Function
 	build << "int rand(int min, int max);";
-	build << "int run() {\n\t";
+
 
 	// Time class
-	build << "class Time {\npublic:\nvoid start(){\ncout << \"TEST\";\n}\n}; Time time;";
+	extraClasses += "class Time {public:void start(){cout << \"TEST\";}};";
 	
+
+	// Base function 
+	return "int run() {" + extraClasses;
 
 }
 
@@ -114,16 +124,15 @@ string replaceAll(string str, const string& from, const string& to) {
 }
 
 int convertfile(string text) {
-	createBaseFile();
 	addSemicolons(text);
 
 	string body = "";
-	string run = "";
-	
+	string run = createBaseFile();
+
 	char c;
 	string currentWord = "";
 	string prevWord;
-	
+
 	vector<string> words;
 	fstream i("build.janninscript", fstream::in);
 
@@ -145,43 +154,43 @@ int convertfile(string text) {
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
 		// Print statements
-		if (replaceAll(words[i], " ", "") == keywords.print) {
-			run += "cout ";
-			int j = 1;
+		//if (replaceAll(words[i], " ", "") == keywords.print) {
+		//	run += "cout ";
+		//	int j = 1;
 
-			// Keep adding until you reach the end of the print statement
-			while (words[i + j] != ")") {
-				// Make sure you are not adding brackets because that will be invalid syntax in c++
-				if (
-				replaceAll(words[i + j], " ", "") != "(" && 
-				replaceAll(words[i + j], " ", "") != ")" && 
-				replaceAll(words[i + j], " ", "") != keywords.noNewLine &&
-				replaceAll(words[i + j], " ", "") != "," &&
-				replaceAll(words[i + j], " ", "") != "" &&
-				replaceAll(words[i + j], "\"", "") != ""
-				) 
-				{
-					cout << words[i + j] << endl;
-					run += "<<" + words[i + j];
-				}
+		//	// Keep adding until you reach the end of the print statement
+		//	while (words[i + j] != ")") {
+		//		// Make sure you are not adding brackets because that will be invalid syntax in c++
+		//		if (
+		//			replaceAll(words[i + j], " ", "") != "(" &&
+		//			replaceAll(words[i + j], " ", "") != ")" &&
+		//			replaceAll(words[i + j], " ", "") != keywords.noNewLine &&
+		//			replaceAll(words[i + j], " ", "") != "," &&
+		//			replaceAll(words[i + j], " ", "") != "" &&
+		//			replaceAll(words[i + j], "\"", "") != ""
+		//			)
+		//		{
+		//			cout << words[i + j] << endl;
+		//			run += "<<" + words[i + j];
+		//		}
 
-				/* 
-					If you put a space it will split the word, so if you 
-					do " ", then the word will be put as just a quotation 
-					mark so I need to check for that to add spaces to print
-				*/ 
-				if (words[i + j] == "\"") {
-					// TODO
-				}
+		//		/*
+		//			If you put a space it will split the word, so if you
+		//			do " ", then the word will be put as just a quotation
+		//			mark so I need to check for that to add spaces to print
+		//		*/
+		//		if (words[i + j] == "\"") {
+		//			// TODO
+		//		}
 
-				j++;
-			}
-			// Offset the current words so you don't repeat
-			i += j + 1;
-			if (words[i - 2] != keywords.noNewLine) {
-				run += "<< endl";
-			}
-		}
+		//		j++;
+		//	}
+		//	// Offset the current words so you don't repeat
+		//	i += j + 1;
+		//	if (words[i - 2] != keywords.noNewLine) {
+		//		run += "<< endl";
+		//	}
+		//}
 
 		// For loops
 		if (replaceAll(words[i], " ", "") == keywords.forLoop) {
@@ -205,7 +214,28 @@ int convertfile(string text) {
 			run += ")";
 			i += j;
 		}
-		run += words[i] + ' ';
+
+		// Functions
+		if (replaceAll(words[i], " ", "") == keywords.functionDecloration) {
+			int bracketCount = 1;
+
+			body += "void ";
+			int j = 1;
+			while (words[i + j] != "{") {
+				body += words[i + j] + ' ';
+				j++;
+			}
+			body += "{";
+			j += 1;
+			while (bracketCount > 0 && (i + j) < words.size()) {
+				if (words[i + j] == "}") bracketCount--;
+				else if (words[i + j] == "{") bracketCount++;
+				body += words[i + j] + ' ';
+				j++;
+			}
+
+			i += j;
+		}
 
 		// While Loops
 		if (replaceAll(words[i], " ", "") == keywords.whileLoop) {
@@ -218,13 +248,16 @@ int convertfile(string text) {
 			run += ") {";
 			i += j;
 		}
+
+		run += words[i] + ' ';
 	}
+	appendToBuild(body);
 	appendToBuild(run);
-	appendToBuild("return 0;\n}");
+	appendToBuild("return 0;}");
 
 	// Import random function
 	if (run.find("rand(") || body.find("rand(")) {
-		appendToBuild("int rand(int min, int max) {\n\treturn rand() % (max + min);\n}");
+		appendToBuild("int rand(int min, int max) {return rand() % (max + min);}");
 	}
 
 	return 0;

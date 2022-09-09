@@ -1,7 +1,10 @@
-
-for i 0 to 100 {
-	int test = rand(0, 10);
-	print(test);
+func test(string message) {
+	print(message);
+	print(message);
+	print(message);
+	print(message);
 }
 
-time.start();;
+test("Hello!");;
+
+print("Hello!!!!!!!", " Testing two inputs!", 10, false);
