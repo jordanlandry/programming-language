@@ -97,6 +97,11 @@ void createBaseFile() {
 	// Random Function
 	build << "int rand(int min, int max);";
 	build << "int run() {\n\t";
+
+	// Time class
+	build << "class Time {\npublic:\nvoid start(){\ncout << \"TEST\";\n}\n}; Time time;";
+	
+
 }
 
 string replaceAll(string str, const string& from, const string& to) {
@@ -152,10 +157,21 @@ int convertfile(string text) {
 				replaceAll(words[i + j], " ", "") != ")" && 
 				replaceAll(words[i + j], " ", "") != keywords.noNewLine &&
 				replaceAll(words[i + j], " ", "") != "," &&
-				replaceAll(words[i + j], " ", "") != "" 
+				replaceAll(words[i + j], " ", "") != "" &&
+				replaceAll(words[i + j], "\"", "") != ""
 				) 
 				{
+					cout << words[i + j] << endl;
 					run += "<<" + words[i + j];
+				}
+
+				/* 
+					If you put a space it will split the word, so if you 
+					do " ", then the word will be put as just a quotation 
+					mark so I need to check for that to add spaces to print
+				*/ 
+				if (words[i + j] == "\"") {
+					// TODO
 				}
 
 				j++;
@@ -190,6 +206,18 @@ int convertfile(string text) {
 			i += j;
 		}
 		run += words[i] + ' ';
+
+		// While Loops
+		if (replaceAll(words[i], " ", "") == keywords.whileLoop) {
+			run += "(";
+			int j = 1;
+			while (replaceAll(words[i + j], " ", "") != "{") {
+				run += words[i + j];
+				j++;
+			}
+			run += ") {";
+			i += j;
+		}
 	}
 	appendToBuild(run);
 	appendToBuild("return 0;\n}");

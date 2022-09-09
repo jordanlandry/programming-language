@@ -3,14 +3,18 @@
 #include <vector>
 using namespace std;
 int rand(int min, int max);int run() {
-	 
- for (int i=0;i<10;i++) {
-   cout <<i<<"<<"<<"poop"<< endl ;  
+	class Time {
+public:
+void start(){
+cout << "TEST";
+}
+}; Time time; 
+ for (int i=0;i<100;i++) {
+  	 int test = rand ( 0 ,  10 )  ;  
+  	 cout <<test<< endl ;  
  } 
   
- if (1==10){ 
-  	 cout <<"hello!"<< endl ;  
- } else cout <<"goodbye!"<< endl ;  ;  
+ time.start (  )  ;  ;  
  return 0;
 }int rand(int min, int max) {
 	return rand() % (max + min);
