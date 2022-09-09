@@ -1,14 +1,24 @@
 #include <iostream>
 #include <string>
 #include <vector>
-using namespace std;void print() {cout << endl;}template<typename First, typename ... Strings>void print(First arg, const Strings&... rest) { cout << arg;print(rest...); }int rand(int min, int max);void test ( string message )  {
-  	 print ( message )  ;  
-  	 print ( message )  ;  
-  	 print ( message )  ;  
-  	 print ( message )  ;  
+using namespace std;void print() {cout << endl;}template<typename First, typename ... Strings>void print(First arg, const Strings&... rest) { cout << arg;print(rest...); }int rand(int min, int max);void printString ( string s )  {
+  	 print ( s )  ;  
+ } void printInt ( int number )  {
+  	 print ( number )  ;  
  } int run() {class Time {public:void start(){cout << "TEST";}};
   
- test ( "Hello!" )  ;  ;  
+ 
   
- print ( "Hello!!!!!!!" ,  " Testing two inputs!" ,  10 ,  false )  ;  
+ for (int i=0;i<10;i++) {
+  	 print ( i )  ;  
+ } 
+  
+ for (int i=0;i<10;i++) {
+  	 print ( "Hello!" )  ;  
+ } 
+  
+ for (int i=0;i<10;i++) {
+  	 int num = rand ( 0 ,  10 )  ;  ;  
+  	 print ( "Random number: " ,  num )  ;  
+ } 
  return 0;}int rand(int min, int max) {return rand() % (max + min);}

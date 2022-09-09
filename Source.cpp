@@ -151,46 +151,14 @@ int convertfile(string text) {
 		else currentWord += c;
 	}
 
+	int currentBracketCount = 0;
+
+
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
-		// Print statements
-		//if (replaceAll(words[i], " ", "") == keywords.print) {
-		//	run += "cout ";
-		//	int j = 1;
+		if (currentBracketCount > 1) {
 
-		//	// Keep adding until you reach the end of the print statement
-		//	while (words[i + j] != ")") {
-		//		// Make sure you are not adding brackets because that will be invalid syntax in c++
-		//		if (
-		//			replaceAll(words[i + j], " ", "") != "(" &&
-		//			replaceAll(words[i + j], " ", "") != ")" &&
-		//			replaceAll(words[i + j], " ", "") != keywords.noNewLine &&
-		//			replaceAll(words[i + j], " ", "") != "," &&
-		//			replaceAll(words[i + j], " ", "") != "" &&
-		//			replaceAll(words[i + j], "\"", "") != ""
-		//			)
-		//		{
-		//			cout << words[i + j] << endl;
-		//			run += "<<" + words[i + j];
-		//		}
-
-		//		/*
-		//			If you put a space it will split the word, so if you
-		//			do " ", then the word will be put as just a quotation
-		//			mark so I need to check for that to add spaces to print
-		//		*/
-		//		if (words[i + j] == "\"") {
-		//			// TODO
-		//		}
-
-		//		j++;
-		//	}
-		//	// Offset the current words so you don't repeat
-		//	i += j + 1;
-		//	if (words[i - 2] != keywords.noNewLine) {
-		//		run += "<< endl";
-		//	}
-		//}
+		}
 
 		// For loops
 		if (replaceAll(words[i], " ", "") == keywords.forLoop) {
@@ -214,6 +182,7 @@ int convertfile(string text) {
 			run += ")";
 			i += j;
 		}
+
 
 		// Functions
 		if (replaceAll(words[i], " ", "") == keywords.functionDecloration) {
