@@ -14,10 +14,14 @@ void addSemicolons(string text);
 
 class Keywords {
 public:
-	string noNewLine = "nnl";
 	string print = "print";
 	string forLoop = "for";
 	string ifStatement = "if";
+	string elseStatement = "else";
+	string switchStatement = "switch";
+	string classStatement = "class";
+	string whileLoop = "while";
+	string noNewLine = "noNewLine";
 };
 const Keywords keywords;
 
@@ -120,7 +124,7 @@ int convertfile(string text) {
 
 	// Split each word by certain characters
 	while (i >> noskipws >> c) {
-		if (c == '\n' || c == ' ' || c == ';' || c == '(' || c == ')' || c == ',') {
+		if (c == '\n' || c == ' ' || c == ';' || c == '(' || c == ')' || c == ',' || c == '\t') {
 			words.push_back(currentWord);
 			currentWord = "";
 
