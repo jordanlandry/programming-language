@@ -28,7 +28,7 @@ const Keywords keywords;
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
-		cout << "Usage: janninscript file" << endl;
+		cout << "Usage: J file" << endl;
 		return 1;
 	}
 
@@ -62,7 +62,7 @@ string readfile(string path) {
 }
 
 void addSemicolons(string text) {
-	ofstream build("build.janninscript");
+	ofstream build("build.j");
 	char prevC = '\n';
 	if (build.is_open()) {
 		for (char& c : text) {
@@ -134,7 +134,7 @@ int convertfile(string text) {
 	string prevWord;
 
 	vector<string> words;
-	fstream i("build.janninscript", fstream::in);
+	fstream i("build.j", fstream::in);
 
 	// Split each word by certain characters
 	while (i >> noskipws >> c) {
