@@ -14,15 +14,29 @@ void addSemicolons(string text);
 
 class Keywords {
 public:
+	// Built in functions
 	string print = "print";
+	string random = "rand";
+
+	
+	// Statements
 	string forLoop = "for";
 	string ifStatement = "if";
 	string elseStatement = "else";
 	string switchStatement = "switch";
 	string classStatement = "class";
-	string whileLoop = "while";
-	string noNewLine = "noNewLine";
 	string functionDecloration = "func";
+	string whileLoop = "while";
+
+	// Keywords
+	string noNewLine = "noNewLine";
+
+	// Methods
+	string appendToArray = ".push";
+
+	// File properties
+	string fileExtension = "j";
+	string buildName = "build";
 };
 const Keywords keywords;
 
@@ -62,7 +76,7 @@ string readfile(string path) {
 }
 
 void addSemicolons(string text) {
-	ofstream build("build.j");
+	ofstream build(keywords.buildName + "." + keywords.fileExtension);
 	char prevC = '\n';
 	if (build.is_open()) {
 		for (char& c : text) {
@@ -134,7 +148,7 @@ int convertfile(string text) {
 	string prevWord;
 
 	vector<string> words;
-	fstream i("build.j", fstream::in);
+	fstream i(keywords.buildName + "." + keywords.fileExtension, fstream::in);
 
 	// Split each word by certain characters
 	while (i >> noskipws >> c) {
@@ -217,6 +231,9 @@ int convertfile(string text) {
 			run += ") {";
 			i += j;
 		}
+
+		// Arrays / Vectors
+		cout << words[i] << endl;
 
 		run += words[i] + ' ';
 	}

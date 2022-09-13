@@ -21,4 +21,12 @@ using namespace std;void print() {cout << endl;}template<typename First, typenam
   	 int num = rand ( 0 ,  10 )  ;  ;  
   	 print ( "Random number: " ,  num )  ;  
  } 
+  
+  
+ int i = 10 ;  
+ print ( i )  ;  
+  
+  
+ int j = [1 ,  2 ,  3] ;  
+ print ( i )  ;  
  return 0;}int rand(int min, int max) {return rand() % (max + min);}
