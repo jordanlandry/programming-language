@@ -4,53 +4,72 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 #include "build.cpp";
-//using namespace std;
 
-string readfile(string path);
-int convertfile(string text);
-void addSemicolons(string text);
+
+std::string readfile(std::string path);
+int convertfile(std::string text);
+void addSemicolons(std::string text);
+
+class variableNames {
+public:
+	std::string currentVariableName = "a";
+	std::string next(std::string curr) {
+		return "a";
+	}
+};
 
 class Keywords {
 public:
 	// Built in functions
-	string print = "print";
-	string random = "rand";
+	std::string print = "print";
+	std::string random = "rand";
 
+	// Types
+	std::string stringType = "string";
+	std::string intType = "int";
+	std::string floatType = "float";
+	std::string doubleType = "double";
+	std::string boolType = "boolean";
 	
 	// Statements
-	string forLoop = "for";
-	string ifStatement = "if";
-	string elseStatement = "else";
-	string switchStatement = "switch";
-	string classStatement = "class";
-	string functionDecloration = "func";
-	string whileLoop = "while";
+	std::string forLoop = "for";
+	std::string ifStatement = "if";
+	std::string elseStatement = "else";
+	std::string switchStatement = "switch";
+	std::string classStatement = "class";
+	std::string functionDecloration = "func";
+	std::string whileLoop = "while";
 
 	// Keywords
-	string noNewLine = "noNewLine";
+	std::string noNewLine = "noNewLine";
+	std::string importFile = "import";
 
 	// Methods
-	string appendToArray = ".push";
+	std::string appendToArray = ".push";
+	std::string sizeOfArray = ".length";
 
 	// File properties
-	string fileExtension = "j";
-	string buildName = "build";
+	std::string fileExtension = "j";
+	std::string buildName = "build";
+
+
 };
 const Keywords keywords;
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
-		cout << "Usage: J file" << endl;
+		std::cout << "Usage: J file" << std::endl;
 		return 1;
 	}
 
-	cout << "Reading file " << argv[1] << "..." << endl;
+	std::cout << "Reading file " << argv[1] << "..." << std::endl;
 
-	string text = readfile(argv[1]);
+	std::string text = readfile(argv[1]);
 	if (text == "") {
-		cout << "Something went wrong reading file: " << argv[1] << " please try again" << endl;
+		std::cout << "Something went wrong reading file: " << argv[1] << " please try again" << std::endl;
 		return 1;
 	}
 
@@ -61,10 +80,10 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-string readfile(string path) {
-	string result = "";
-	string line;
-	ifstream file(path);
+std::string readfile(std::string path) {
+	std::string result = "";
+	std::string line;
+	std::ifstream file(path);
 	if (!file.is_open()) return "";
 
 	while (getline(file, line)) {
@@ -75,8 +94,8 @@ string readfile(string path) {
 	return result;
 }
 
-void addSemicolons(string text) {
-	ofstream build(keywords.buildName + "." + keywords.fileExtension);
+void addSemicolons(std::string text) {
+	std::ofstream build(keywords.buildName + "." + keywords.fileExtension);
 	char prevC = '\n';
 	if (build.is_open()) {
 		for (char& c : text) {
@@ -90,68 +109,94 @@ void addSemicolons(string text) {
 	build.close();
 }
 
-void appendToBuild(string text) {
-	ofstream outfile;
-	outfile.open("build.cpp", ios_base::app);
+void appendToBuild(std::string text) {
+	std::ofstream outfile;
+	outfile.open("build.cpp", std::ios_base::app);
 	outfile << text;
 }
 
 void appendToBuild(char text) {
-	ofstream outfile;
-	outfile.open("build.cpp", ios_base::app);
+	std::ofstream outfile;
+	outfile.open("build.cpp", std::ios_base::app);
 	outfile << text;
 }
 
-string createBaseFile() {
-	ofstream build("build.cpp");
-	string extraClasses = "";
+std::string createBaseFile() {
+	std::ofstream build("build.cpp");
+	std::string extraClasses = "";
 
 	build << "#include <iostream>\n";
 	build << "#include <string>\n";
 	build << "#include <vector>\n";
-	build << "using namespace std;";
+
+	// Include Types
+	build << "#include \"Int.h\";\n";
+	build << "#include \"String.h\";\n";
+	build << "#include \"Float.h\";\n";
+
+	// Including other header files
+	build << "#include \"Math.h\";\n";
+	build << "#include \"Time.h\";\n";
 
 	// Print Function
-	build << "void print() {cout << endl;}template<typename First, typename ... Strings>";
-	build << "void print(First arg, const Strings&... rest) { cout << arg;print(rest...); }";
+	build << "void print() {\n\tstd::cout << std::endl;\n}\ntemplate<typename First, typename ... Strings>\n";
+	build << "void print(First arg, const Strings&... rest) {\n\tstd::cout << arg;\n\tprint(rest...);\n }\n";
 
 	// Random Function
-	build << "int rand(int min, int max);";
+	build << "int rand(int min, int max);\n";
+	
+	// Type classes
+	/*extraClasses += "class Int {public:int value;};";*/
+	/*extraClasses += "class String {public:string value;};";
+	extraClasses += "class Boolean {public:bool value;};";
+	extraClasses += "class Float {public:float value;};";
+	extraClasses += "class Double {public:double value;};";*/
+	/*build << "#include \"String.h\"";
+	build << "#include \"Boolean.h\"";
+	build << "#include \"Float.h\"";
+	build << "#include \"Double.h\"";*/
 
-
-	// Time class
-	extraClasses += "class Time {public:void start(){cout << \"TEST\";}};";
 	
 
 	// Base function 
-	return "int run() {" + extraClasses;
-
+	return "int run() {\n" + extraClasses;
 }
 
-string replaceAll(string str, const string& from, const string& to) {
+std::string replaceAll(std::string str, const std::string& from, const std::string& to) {
 	size_t start_pos = 0;
-	while ((start_pos = str.find(from, start_pos)) != string::npos) {
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
 		str.replace(start_pos, from.length(), to);
 		start_pos += to.length();
 	}
 	return str;
 }
 
-int convertfile(string text) {
+std::string getVariableType(std::string type) {
+	if (type == keywords.stringType) return "String";
+	if (type == keywords.intType) return "Int";
+	if (type == keywords.boolType) return "Bool";
+	if (type == keywords.floatType) return "Float";
+	if (type == keywords.doubleType) return "Double";
+	return "";
+}
+
+int convertfile(std::string text) {
 	addSemicolons(text);
 
-	string body = "";
-	string run = createBaseFile();
+	std::string body = "";
+	std::string run = createBaseFile();
 
 	char c;
-	string currentWord = "";
-	string prevWord;
+	std::string currentWord = "";
+	std::string prevWord;
 
-	vector<string> words;
-	fstream i(keywords.buildName + "." + keywords.fileExtension, fstream::in);
+	std::vector<std::string> words;
+	std::fstream i(keywords.buildName + "." + keywords.fileExtension, std::fstream::in);
+
+	bool inQuotes = false;
 
 	// Split each word by certain characters
-	while (i >> noskipws >> c) {
+	while (i >> std::noskipws >> c) {
 		if (c == '\n' || c == ' ' || c == ';' || c == '(' || c == ')' || c == ',' || c == '\t') {
 			words.push_back(currentWord);
 			currentWord = "";
@@ -170,6 +215,12 @@ int convertfile(string text) {
 
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
+		// Check to see if you are putting keywords in a string
+		/*if (words[i][0] == '"') {
+			inQuotes = !inQuotes;
+		}
+		std::cout << inQuotes << std::endl;*/
+
 		if (currentBracketCount > 1) {
 
 		}
@@ -232,8 +283,26 @@ int convertfile(string text) {
 			i += j;
 		}
 
+		// Types
+		// Integers
+
+		std::string varType = getVariableType(replaceAll(words[i], " ", ""));
+		if (varType != "") {
+			run += varType + " ";
+			run += words[i + 1];
+			run += ";";
+
+			// Get the value of the new variable;
+			std::cout << (words[i + 1] == ";") << std::endl;
+
+			/*while (words[i + 1] != ";") {
+
+			}*/
+			run += words[i + 1] + ".value = " + words[i + 3];
+			i += 4;
+		}
+
 		// Arrays / Vectors
-		cout << words[i] << endl;
 
 		run += words[i] + ' ';
 	}
