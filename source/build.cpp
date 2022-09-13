@@ -17,7 +17,17 @@ void print(First arg, const Strings&... rest) {
  }
 int rand(int min, int max);
 Math math;
+Time timer;
 int run() {
-Int test;test.value = math.pow( 10 ,  3 )  ;  
- print ( test.value )  ;  
+Float test;test.value = sqrt( 81 )  ;  
+ print ( test . value )  ;  
+  
+ timer. start (  )  ;  ;  
+  
+  
+ print ( math. sqrt ( 295 )  )  ;  
+  
+  
+  
+ print ( math. nthroot ( 1000 ,  3 )  )  ;  
  return 0;}int rand(int min, int max) {return rand() % (max + min);}
