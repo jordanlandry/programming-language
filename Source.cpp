@@ -144,19 +144,6 @@ std::string createBaseFile() {
 
 	// Random Function
 	build << "int rand(int min, int max);\n";
-	
-	// Type classes
-	/*extraClasses += "class Int {public:int value;};";*/
-	/*extraClasses += "class String {public:string value;};";
-	extraClasses += "class Boolean {public:bool value;};";
-	extraClasses += "class Float {public:float value;};";
-	extraClasses += "class Double {public:double value;};";*/
-	/*build << "#include \"String.h\"";
-	build << "#include \"Boolean.h\"";
-	build << "#include \"Float.h\"";
-	build << "#include \"Double.h\"";*/
-
-	
 
 	// Base function 
 	return "int run() {\n" + extraClasses;
