@@ -1,2 +1,2 @@
-int test = 10;
-print(test.value);
+int test = math.pow(10, 3)
+print(test.value)

@@ -1,9 +1,13 @@
 #pragma once
 class Math {
 public:
-	double pow(double num1, double exponent) {
-		return 1;
-	}
+    int pow(int num, int exp) {
+        int result = num;
+        for (int i = 0; i < exp; i++) {
+            result *= num;
+        }
+        return result;
+    }
 
 	double sqrt(double num) {
 		return 1;

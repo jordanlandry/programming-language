@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Int.h";
-#include "String.h";
-#include "Float.h";
-#include "Math.h";
-#include "Time.h";
+#include "../headers/Int.h";
+#include "../headers/String.h";
+#include "../headers/Float.h";
+#include "../headers/Boolean.h";
+#include "../headers/Math.h";
+#include "../headers/Time.h";
 void print() {
 	std::cout << std::endl;
 }
@@ -15,7 +16,8 @@ void print(First arg, const Strings&... rest) {
 	print(rest...);
  }
 int rand(int min, int max);
+Math math;
 int run() {
-Int test;test.value = 10;  ;  
- print ( test.value )  ;  ;  
+Int test;test.value = math.pow( 10 ,  3 )  ;  
+ print ( test.value )  ;  
  return 0;}int rand(int min, int max) {return rand() % (max + min);}
