@@ -19,6 +19,6 @@ public:
 	}
 
 	int elapsedTime() {
-		
+		return 0;
 	}
 };

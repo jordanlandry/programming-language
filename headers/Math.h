@@ -1,6 +1,7 @@
 #pragma once
 class Math {
 public:
+	float sqrtDist = 0.0001;
     float pow(float num, int exp) {
         float result = num;
         for (int i = 0; i < exp - 1; i++) {
@@ -14,10 +15,10 @@ public:
 		float low = 0;
 		float high = num / 2;
 		float guess = high / 2;
-		float minDistance = 0.0000000000001;
+		float minDistance = this->sqrtDist;
 		if (num == 1) return 1;
 		if (num < 0) return NAN;
-		while (guess * guess < (num - minDistance) || guess * guess > (num + minDistance)) {
+		while ((guess * guess < (num - minDistance) || guess * guess > (num + minDistance)) && (high - low) > minDistance) {
 			if (guess * guess > num + minDistance) high = guess;
 			else low = guess;
 
@@ -30,10 +31,10 @@ public:
 		float low = 0;
 		float high = num / 2;
 		float guess = high / 2;
-		float minDistance = 0.00000000001;
+		float minDistance = this->sqrtDist;
 		if (num == 1) return 1;
 		if (num < 0) return NAN;
-		while (this->pow(guess, root) < (num - minDistance) || this->pow(guess, root) > (num + minDistance)) {
+		while ((this->pow(guess, root) < (num - minDistance) || this->pow(guess, root) > (num + minDistance)) && (high - low) > minDistance)  {
 			if (this->pow(guess, root) > num + minDistance) high = guess;
 			else low = guess;
 
