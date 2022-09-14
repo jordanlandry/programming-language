@@ -244,28 +244,6 @@ int convertfile(std::string text) {
 			i += j;
 		}
 
-		// Functions
-		if (replaceAll(words[i], " ", "") == keywords.functionDecloration) {
-			int bracketCount = 1;
-
-			body += "void ";
-			int j = 1;
-			while (words[i + j] != "{") {
-				body += words[i + j] + ' ';
-				j++;
-			}
-			body += "{";
-			j += 1;
-			while (bracketCount > 0 && (i + j) < words.size()) {
-				if (words[i + j] == "}") bracketCount--;
-				else if (words[i + j] == "{") bracketCount++;
-				body += words[i + j] + ' ';
-				j++;
-			}
-
-			i += j;
-		}
-
 		// While Loops
 		if (replaceAll(words[i], " ", "") == keywords.whileLoop) {
 			run += "(";
@@ -279,18 +257,50 @@ int convertfile(std::string text) {
 		}
 
 		// Types
-		// Integers
 		std::string varType = getVariableType(replaceAll(words[i], " ", ""));
 		if (varType != "") {
-			// Look through the line to see if there is a start of an array
-			int j = 0;
 			bool doRun = true;
+
+			// Look through the line to see if there is a start of an array or a function
+			int j = 0;
 			while (true) {
-				if (i + j == words.size() - 1 || words[i + j] == "]") {
+				// Array
+				if (i + j < words.size() && words[i + j] == "]") {
 					doRun = false;	// Don't run if you are making an array
 					i += 3;			// Remove "int x ="
 					break;
 				}
+
+				// Check for function declaration
+				if (i + 2 < words.size() && words[i + 2] == "(") {
+					int bracketCount = 1;
+
+					body += words[i] + " ";				// Add type
+					int k = 1;							// Iterator to ffind the end of function
+					while (words[i + k] != "{") {		// Add the parameters of the function
+						body += words[i + k] + ' ';
+						k++;
+					}
+					body += "{";
+					k += 1;
+		
+					while (bracketCount > 0 && (i + k) < words.size()) {		// Find the end of the function by finding the last '}'
+						if (words[i + k] == "}") bracketCount--;
+						else if (words[i + k] == "{") bracketCount++;
+						body += words[i + k] + ' ';
+						k++;
+					}
+					
+					// Offset the i variable to not duplicate words
+					i += k;
+
+					doRun = false;
+					break;
+				}
+	
+				// Check for end of the line
+				if (words[i + j] == ";") break;
+
 				j++;
 			}
 
@@ -307,9 +317,6 @@ int convertfile(std::string text) {
 				i += 4;
 			}
 		}
-
-		/*std::vector<int> p = { 1, 2, 3, 4, 5 };
-		int p = [1, 2, 3, 4, 5]*/
 
 		// Arrays / Vectors
 		if (i > 2) {
@@ -334,7 +341,7 @@ int convertfile(std::string text) {
 			}
 		}
 
-		// Array functions
+		// Array methods
 		// Append
 		if (replaceAll(words[i], " ", "") == keywords.appendToArray) {
 			if (words[i - 1] == ".") {
