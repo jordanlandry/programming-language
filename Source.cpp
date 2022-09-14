@@ -335,9 +335,18 @@ int convertfile(std::string text) {
 		}
 
 		// Array functions
+		// Append
 		if (replaceAll(words[i], " ", "") == keywords.appendToArray) {
 			if (words[i - 1] == ".") {
 				run += "push_back";
+				i += 1;
+			}
+		}
+
+		// Size
+		if (replaceAll(words[i], " ", "") == keywords.sizeOfArray) {
+			if (words[i - 1] == ".") {
+				run += "size()";
 				i += 1;
 			}
 		}
