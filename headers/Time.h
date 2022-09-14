@@ -1,9 +1,13 @@
 #pragma once
 #include <iostream>
+#include <chrono>
+#include <time.h>
+#include <ctime>
+
 class Time {
 private:
-	int	startTime = 0;
-	int endTime = 10;
+	int startTime;
+	int endTime;
     
 public:
 	void start() {
@@ -12,5 +16,9 @@ public:
 
 	void end() {
 		return;
+	}
+
+	int elapsedTime() {
+		
 	}
 };

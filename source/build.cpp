@@ -23,11 +23,4 @@ Float test;test.value = sqrt( 81 )  ;
  print ( test . value )  ;  
   
  timer. start (  )  ;  ;  
-  
-  
- print ( math. sqrt ( 295 )  )  ;  
-  
-  
-  
- print ( math. nthroot ( 1000 ,  3 )  )  ;  
  return 0;}int rand(int min, int max) {return rand() % (max + min);}

@@ -3,7 +3,7 @@ class Math {
 public:
     float pow(float num, int exp) {
         float result = num;
-        for (int i = 0; i < exp; i++) {
+        for (int i = 0; i < exp - 1; i++) {
             result *= num;
         }
         return result;
@@ -13,7 +13,7 @@ public:
 		// Binary search
 		float low = 0;
 		float high = num / 2;
-		float guess = high;
+		float guess = high / 2;
 		float minDistance = 0.0000000000001;
 		if (num == 1) return 1;
 		if (num < 0) return NAN;
@@ -29,7 +29,7 @@ public:
 	float nthroot(float num, int root) {
 		float low = 0;
 		float high = num / 2;
-		float guess = high;
+		float guess = high / 2;
 		float minDistance = 0.00000000001;
 		if (num == 1) return 1;
 		if (num < 0) return NAN;
