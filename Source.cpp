@@ -31,6 +31,7 @@ public:
 	std::string floatType = "float";
 	std::string doubleType = "double";
 	std::string boolType = "boolean";
+	std::string voidType = "void";
 	
 	// Statements
 	std::string forLoop = "for";
@@ -174,6 +175,7 @@ std::string getVariableType(std::string type) {
 	if (type == keywords.boolType) return "Bool";
 	if (type == keywords.floatType) return "Float";
 	if (type == keywords.doubleType) return "Double";
+	if (type == keywords.voidType) return "void";
 	return "";
 }
 
@@ -222,15 +224,15 @@ int convertfile(std::string text) {
 		}
 
 		// For loops
-		if (replaceAll(words[i], " ", "") == keywords.forLoop) {
-			run += "for (int " + words[i + 1] + "=" + words[i + 2] + ";" + words[i + 1] + "<";
-			if (replaceAll(words[i + 3], " ", "") == "to") {
-				run += words[i + 4];
-			}
+		//if (replaceAll(words[i], " ", "") == keywords.forLoop) {
+		//	run += "for (int " + words[i + 1] + "=" + words[i + 2] + ";" + words[i + 1] + "<";
+		//	if (replaceAll(words[i + 3], " ", "") == "to") {
+		//		run += words[i + 4];
+		//	}
 
-			run += ";" + words[i + 1] + "++) {";
-			i += 6;		// Skip to the curly bracket
-		}
+		//	run += ";" + words[i + 1] + "++) {";
+		//	i += 6;		// Skip to the curly bracket
+		//}
 
 		// If statements
 		if (replaceAll(words[i], " ", "") == keywords.ifStatement) {
@@ -275,9 +277,12 @@ int convertfile(std::string text) {
 				if (i + 2 < words.size() && words[i + 2] == "(") {
 					int bracketCount = 1;
 
+	
+					if (words[i] == keywords.stringType) body += "std::";		// Include the namespace
 					body += words[i] + " ";				// Add type
 					int k = 1;							// Iterator to ffind the end of function
 					while (words[i + k] != "{") {		// Add the parameters of the function
+						if (words[i + k] == keywords.stringType) body += "std::";		// Include namespace
 						body += words[i + k] + ' ';
 						k++;
 					}
@@ -291,29 +296,21 @@ int convertfile(std::string text) {
 						k++;
 					}
 					
-					// Offset the i variable to not duplicate words
-					i += k;
+					i += k;		// Offset the i variable to not duplicate words
 
 					doRun = false;
 					break;
 				}
 	
-				// Check for end of the line
-				if (words[i + j] == ";") break;
-
+				if (words[i + j] == ";") break;			// Check for end of the line
 				j++;
 			}
 
 			if (doRun) {
 				run += varType + " ";
-				run += words[i + 1];
+				run += words[i + 1];	// Variable Name
 				run += ";";
-				// Get the value of the new variable;
-
-				/*while (words[i + 1] != ";") {
-
-				}*/
-				run += words[i + 1] + ".value = " + words[i + 3];
+				run += words[i + 1] + ".value = " + words[i + 3];		// Value of the variable
 				i += 4;
 			}
 		}
