@@ -214,6 +214,9 @@ int convertfile(std::string text) {
 	// Go through each word
 	for (int i = 0; i < words.size(); i++) {
 		// Check to see if you are putting keywords in a string
+
+
+		// Make sure you don't convert words in a string
 		/*if (words[i][0] == '"') {
 			inQuotes = !inQuotes;
 		}
